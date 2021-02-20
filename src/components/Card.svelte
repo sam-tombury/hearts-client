@@ -5,9 +5,9 @@
 </script>
 
 <div on:click class:selected class={suit.colour}>
-	<span class='top-left'>{suit.icon}</span>
-	<span class='value'>{value.shortName}</span>
-	<span class='bottom-right'>{suit.icon}</span>
+	<span class="top-left">{suit.icon}</span>
+	<span class="value">{value.shortName}</span>
+	<span class="bottom-right">{suit.icon}</span>
 </div>
 
 <style>
@@ -31,7 +31,7 @@
 
 	.selected {
 		transform: translateY(-0.5rem);
-		border-color: #666
+		border-color: #666;
 	}
 
 	div {
@@ -46,5 +46,4 @@
 		display: inline-block;
 		cursor: pointer;
 	}
-
 </style>

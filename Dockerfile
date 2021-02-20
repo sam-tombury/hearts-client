@@ -1,3 +1,3 @@
-FROM nginx:alpine
-COPY public /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+FROM caddy:2.2.1-alpine
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY public /srv
