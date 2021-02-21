@@ -2,7 +2,6 @@
 	import Card from "../components/Card.svelte";
 	import Scores from "../components/Scores.svelte";
 	import Trick from "../components/Trick.svelte";
-	import * as oboe from "oboe";
 
 	let hand = [];
 	let trick = [];
@@ -29,10 +28,17 @@
 		};
 		const url = `/api/games/${gameID}/seats/${seatID}`;
 		await fetch(url, fetchData);
-		oboe(url + "/listen").node("!.*", onMessage);
-		showEvent(
-			"Welcome, " + name + ". The game will start once all players have joined."
+		const socket = new WebSocket(
+			(window.location.protocol === "https:" ? "wss://" : "ws://") +
+				window.location.host +
+				url +
+				"/ws"
 		);
+		socket.onopen = () =>
+			showEvent(
+				`Welcome, ${name}. The game will start once all players have joined.`
+			);
+		socket.onmessage = (msg) => onMessage(JSON.parse(msg.data));
 	};
 
 	const showEvent = (text) => {
@@ -96,13 +102,7 @@
 			return holding;
 		});
 		showEvent(
-			"Choose " +
-				data.passCount +
-				" cards to pass to " +
-				data.passTo +
-				". " +
-				data.firstLead +
-				" will lead first."
+			`Choose ${data.passCount} cards to pass to ${data.passTo}. ${data.firstLead} will lead first.`
 		);
 		passCount = data.passCount;
 		passing = true;
@@ -162,20 +162,16 @@
 
 	const requestPlay = (suit) => {
 		playing = true;
-		showEvent("Your " + (suit ? "turn, the lead is " + suit.name : "lead"));
+		showEvent(`Your ${suit ? "turn, the lead is " + suit.name : "lead"}`);
 	};
 
 	const cardPlayed = (data) => {
 		playing = false;
 		trick = [...trick, data.card];
 		showEvent(
-			"The " +
-				data.card.value.name +
-				" of " +
-				data.card.suit.name +
-				" was played"
+			`The ${data.card.value.name} of ${data.card.suit.name} was played`
 		);
-		data.toPlay && showEvent(data.toPlay + "'s turn");
+		data.toPlay && showEvent(`${data.toPlay}'s turn`);
 	};
 
 	const toggleSelected = (card) => {
@@ -197,7 +193,7 @@
 
 	const pass = () => {
 		if (selectedCards.length !== passCount) {
-			showEvent("Please select " + passCount + " cards to pass");
+			showEvent(`Please select ${passCount} cards to pass`);
 			return;
 		}
 		const fetchData = {
