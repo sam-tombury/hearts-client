@@ -6,7 +6,7 @@ volumes:
 
 services:
   api:
-    image: hearts:0.3
+    image: hearts-api:latest
     restart: always
   client:
     image: hearts-client:latest
