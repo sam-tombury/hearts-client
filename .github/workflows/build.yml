@@ -11,7 +11,7 @@ jobs:
     - uses: actions/setup-node@v2
     - name: Build client
       run: 
-        yarn build
+        yarn run build
     - name: Build docker image
       run: 
         docker build . --tag hearts-client:latest
